@@ -13,24 +13,21 @@ let camera, scene, renderer;
 //stores each title 
 let message;
 
-let x, y, z;
-
 init();
 
 function init( ) {
 
     //adding a camera
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-    camera.position.set(0, -400, 600);
+    camera.position.set(0, 0, 2600);
 
     //adding a scene
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xf0f0f0);
 
-    
-
     //creating a font and using it as the geometry
     const loader = new FontLoader();
+
     loader.load('./fonts/Montserrat_Regular.json', function (font) {
 
         const color = 0x000000;
@@ -41,30 +38,27 @@ function init( ) {
             side: THREE.DoubleSide
         } );
 
-        
+        for (let i = 0; i < 55; i++) {
 
-        for (let i = 0; i < 15; i++) {
             message = sentences[i];
-            const geometry = new TextGeometry(message, {
-                font: font
-            } );
 
             const shapes = font.generateShapes(message, 100);
 
-            const geometry2 = new THREE.ShapeGeometry(shapes);
+            const geometry = new THREE.ShapeGeometry(shapes);
 
             //generate a 1 or -1
             var plusOrMinus = Math.random() < 0.5 ? -1 : 1;
             var plusOrMinus2 = Math.round(Math.random()) * 2 - 1;
             
-            var title = new THREE.Mesh(geometry2, matLite);
-                title.position.x = plusOrMinus * ( 300 + ((Math.random()*10) + 1) + (Math.random()*100) + (Math.random()*1000) );
+            var title = new THREE.Mesh(geometry, matLite);
+                title.position.x = plusOrMinus * ( 900 + ((Math.random()*10) + 1) + (Math.random()*100) + (Math.random()*1000) );
 
-                title.position.z = 300 + ((Math.random()*10) + 1) + (Math.random()*100) + (Math.random()*1000);
+                title.position.z = plusOrMinus2 * (900 + ((Math.random()*10) + 1) + (Math.random()*100) + (Math.random()*1000));
 
-                title.position.y = plusOrMinus2 * ( 300 + ((Math.random()*10) + 1) + (Math.random()*100) + (Math.random()*1000) );
+                title.position.y = plusOrMinus2 * ( 900 + ((Math.random()*10) + 1) + (Math.random()*100) + (Math.random()*1000) );
 
-                title.rotateY(Math.random() * 2.2 * 3.14)
+                title.rotateY(Math.random() * 1.1 * 3.14 * plusOrMinus2);
+                title.scale.setScalar( 0.5 )
                 scene.add(title);
         }
 
