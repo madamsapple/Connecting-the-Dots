@@ -83,6 +83,9 @@ for word in uniq_words:
 #print(morethanonce)
 #print(len(morethanonce))
 
+#convert dict to json and write it to a new file
+with open("wordcount.json", "w") as outfile: 
+    json.dump(morethanonce, outfile)
 
 
 #SECTION 2------ finding matches
