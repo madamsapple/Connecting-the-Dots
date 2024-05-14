@@ -8,6 +8,7 @@ import * as GeometryUtils from 'https://unpkg.com/three@0.161.0/examples/jsm/uti
 
 
 
+//see three.js version
 //console.log(THREE.REVISION);
 
 const sentences = [
@@ -619,13 +620,17 @@ const uniq_words = {
     "translational": 2,
     "making": 2,
     "ultrafiltration": 2
-}
+};
+
+var word_and_coord = {};
 
 //3 basic needs to display aanything in three js
 let camera, scene, renderer;
 
 //stores each title 
 let message;
+
+let title_and_coord = {};
 
 init();
 
@@ -641,9 +646,6 @@ function init() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xf0f0f0);
 
-    //const catenary = new CatenaryCurve(p1, p2, 10);
-    //const myGeometry = new TubeGeometry(catenary, 100, 0.1, 20, false); 
-
 
     //creating a font and using it as the geometry
     const loader = new FontLoader();
@@ -652,20 +654,19 @@ function init() {
 
         const color = 0x000000;
 
-        const title_coord = new THREE.Vector3( );
+        var title_coord = new THREE.Vector3();
 
-        const matLite = new THREE.MeshBasicMaterial( {
+        const matLite = new THREE.MeshBasicMaterial({
             color: color,
             opacity: 1.0,
             side: THREE.DoubleSide
-        } );
+        });
 
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < sentences.length - 400; i++) {
 
             message = sentences[i];
 
             const shapes = font.generateShapes(message, 100);
-
             const geometry = new THREE.ShapeGeometry(shapes);
 
             //generate a 1 or -1
@@ -675,10 +676,9 @@ function init() {
             var title = new THREE.Mesh(geometry, matLite);
                 title.position.x = i*100*plusOrMinus*Math.random();
 
-                title.position.y = plusOrMinus2 * ( 300 + ((Math.random()*100) + 0) + (Math.random()*1000));
+                title.position.y = plusOrMinus2 * (300 + ((Math.random()*100) + 0) + (Math.random()*1000));
 
                 title.position.z = i*100;
-                
                 // plusOrMinus * ( 900 + ((Math.random()*10) + 0) + (Math.random()*100) + (Math.random()*1000) );
 
                 // title.position.z = plusOrMinus2 * (900 + ((Math.random()*10) + 0) + (Math.random()*100) + (Math.random()*1000));
@@ -687,54 +687,119 @@ function init() {
 
                 // title.rotateY(Math.random() * 1.1 * 3.14 * plusOrMinus2);
                 title.scale.setScalar(0.9)
+                
                 scene.add(title);
+                title_and_coord[message] = title.getWorldPosition(title_coord);
 
                 //printing each title's coord
                 
-                console.log(title.getWorldPosition(title_coord));
+                //console.log(title.getWorldPosition(title_coord));
                 //scene.add( line );
+
+        //title loop finishes here
         }
-
-        //setting up line objects 
-        const material = new THREE.LineDashedMaterial( { color: 0xc90076, dashSize: 20, gapSize: 7.5 } );
-        const points = [];
-        points.push( new THREE.Vector3( - 200, 0, 0 ) );
-        points.push( new THREE.Vector3( 0, 200, 0 ) );
-        points.push( new THREE.Vector3( 0, 0, 200 ) );
-
-        const geometry = new THREE.BufferGeometry().setFromPoints( points );
-        const line = new THREE.Line( geometry, material );
-        line.computeLineDistances();
-        scene.add( line );
 
         render();
 
+        //setting up line objects 
+        // const material = new THREE.LineDashedMaterial({color: 0xc90076, dashSize: 20, gapSize: 7.5});
+        // const points = [];
+        // points.push( new THREE.Vector3(- 200, 0, 0) );
+        // points.push( new THREE.Vector3(0, 200, 0) );
+        // points.push( new THREE.Vector3(0, 0, 200) );
+
+        // const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        // const line = new THREE.Line( geometry, material );
+        // line.computeLineDistances();
+        // scene.add(line);
+
+        /*
+        //Rendering lines across titles with shared words
+        
+        PSEUDOCODE:
+        - Loop through each unique word in uniq_words dictionary (604 at present)
+            - Loop through all the titles (508 at present)
+                - if the word appears in the title
+                    - Make a new dict/add to a dict 
+                      where the key is the word and value is the world coordinates of the title
+                      for example:
+                        {
+                          "ai" : [242.34, 234.989, 8756.21],
+                          "its" : [922.34, 834.989, 3177.21]
+                        }
+
+        Once dict is complete, loop through it and draw lines intersecting at all those coordinates
+        
+
+
+        //loop through each unique word
+        for (const [key, value] of Object.entries(uniq_words)) {
+            //console.log(key, value);
+
+            //coords of titles that have shared words will be stored in this local var
+            //var sets to 0 with every new key/value pair aka every new word
+            var coord_values = [];
+
+            //loop through every title
+            for (let i = 0; i < (sentences.length); i++) {
+
+                message = sentences[i];
+    
+                    //printing each title's coord
+                    
+                    //console.log(title.getWorldPosition(title_coord));
+                    //scene.add( line );
+                
+
+                //converting each sentence/title to lowercase since dict has all lowercase words
+                var lwrcase = message.toLowerCase();
+
+                //if each sentence/title includes the word
+                if (lwrcase.includes[key]){
+
+                    //append the coord of title to list/array initialized before the loop
+                    coord_values.push(title.getWorldPosition(title_coord));
+                }
+
+            //title loop finishes here
+            }
+
+            //continuing from line of code 6 steps above
+            //add this list of coords to the corresponding word in the new dict: word_and_coord
+            word_and_coord[key] = coord_values;
+
+        //keyvalue dict loop ends here
+        }
+        console.log(word_and_coord)
+        */
+
     }); //end load function
 
-    renderer = new THREE.WebGLRenderer( { antialias: true } );
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    document.body.appendChild( renderer.domElement );
+    renderer = new THREE.WebGLRenderer( {antialias: true} );
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
 
-    const controls = new OrbitControls( camera, renderer.domElement );
-    controls.target.set( 0, 0, 0 );
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 0, 0);
     controls.update();
 
-    controls.addEventListener( 'change', render );
-    window.addEventListener( 'resize', onWindowResize );
+    controls.addEventListener('change', render);
+    window.addEventListener('resize', onWindowResize);
 
 } // end init
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.setSize(window.innerWidth, window.innerHeight);
     render();
 }
-
 
 
 //render the entire scene
 function render() {
     renderer.render( scene, camera );
 }
+
+console.log(title_and_coord)
