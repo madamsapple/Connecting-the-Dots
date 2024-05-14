@@ -1,5 +1,6 @@
 from ast import literal_eval
 import re
+import json
 
 #file already has list of strings. open that list instead of converting all data
 #into one string
@@ -39,6 +40,8 @@ for title in data:
 #how many items in the dict
 #print(len(uniq_words))
 
+
+#----THIS IS NOT RUN SINCE EDGE CASES ARE DIRECTLY CHECKED FOR IN MAIN LOOP ABOVE
 #once all above code runs, dict is updated, check for edge cases in dict:
 #check if there are blank values
 # for word in uniq_words.keys():
@@ -58,8 +61,30 @@ for title in data:
 #         #remove invalid keys and values
 #         uniq_words.pop(word)
 
-print(uniq_words)
+#print(uniq_words)
+#count the total number of unique words across titles - 1940 latest
 print(len(uniq_words))
 
+#count no of titles - 508 latest
+# count = 0
+# for title in data:
+#     count +=1
+# print(count)
+
+#create new dict with unique words that have more than 1 occurence
+morethanonce = {}
+for word in uniq_words:
+    #here word is key not value of dict
+
+    #if value of word is more than 1
+    if uniq_words[word] > 1:
+        morethanonce.update({word: uniq_words[word]})
+
+#print(morethanonce)
+#print(len(morethanonce))
+
+
+
+#SECTION 2------ finding matches
 
 
