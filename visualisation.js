@@ -633,7 +633,7 @@ let message;
 let title_and_coord = {};
 
 init();
-
+render();
 
 function init() {
 
@@ -645,7 +645,6 @@ function init() {
     //adding a scene
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xf0f0f0);
-
 
     //creating a font and using it as the geometry
     const loader = new FontLoader();
@@ -699,8 +698,6 @@ function init() {
         //title loop finishes here
         }
 
-        render();
-
         //setting up line objects 
         // const material = new THREE.LineDashedMaterial({color: 0xc90076, dashSize: 20, gapSize: 7.5});
         // const points = [];
@@ -729,16 +726,13 @@ function init() {
                         }
 
         Once dict is complete, loop through it and draw lines intersecting at all those coordinates
-        
-
-
-        //loop through each unique word
+         //loop through each unique word
         for (const [key, value] of Object.entries(uniq_words)) {
             //console.log(key, value);
 
             //coords of titles that have shared words will be stored in this local var
             //var sets to 0 with every new key/value pair aka every new word
-            var coord_values = [];
+            var shared_coords = [];
 
             //loop through every title
             for (let i = 0; i < (sentences.length); i++) {
@@ -758,7 +752,7 @@ function init() {
                 if (lwrcase.includes[key]){
 
                     //append the coord of title to list/array initialized before the loop
-                    coord_values.push(title.getWorldPosition(title_coord));
+                    shared_coords.push(title.getWorldPosition(title_coord));
                 }
 
             //title loop finishes here
@@ -766,24 +760,87 @@ function init() {
 
             //continuing from line of code 6 steps above
             //add this list of coords to the corresponding word in the new dict: word_and_coord
-            word_and_coord[key] = coord_values;
+            word_and_coord[key] = shared_coords;
 
         //keyvalue dict loop ends here
         }
-        console.log(word_and_coord)
         */
 
     }); //end load function
+
+    //Rendering lines across titles with shared words
+        
+    // PSEUDOCODE:
+    // - Loop through each unique word in uniq_words dictionary (604 at present)
+    //     - Loop through all the titles (508 at present)
+    //         - if the word appears in the title
+    //             - Make a new dict/add to a dict 
+    //               where the key is the word and value is the world coordinates of the title
+    //               for example:
+    //                 {
+    //                   "ai" : [242.34, 234.989, 8756.21],
+    //                   "its" : [922.34, 834.989, 3177.21]
+    //                 }
+    // Once dict is complete, loop through it and draw lines intersecting at all those coordinates
+    
+    
+    //loop through each unique word
+    for (const [key, value] of Object.entries(uniq_words)) {
+        //console.log(key, value);
+
+        //coords of titles that have shared words will be stored in this local var
+        //var sets to 0 with every new key/value pair aka every new word
+        var shared_coords = [];
+
+        //loop through every title
+        for (const [a, b] of Object.entries(title_and_coord)) {
+
+            
+
+                //printing each title's coord
+                
+                //console.log(title.getWorldPosition(title_coord));
+                //scene.add( line );
+            
+
+            //converting each sentence/title to lowercase since dict has all lowercase words
+            var lwrcase = a.toLowerCase();
+
+            //if each sentence/title includes the word
+            if (lwrcase.includes[key]){
+
+                //append the coord of title to list/array initialized before the loop
+                shared_coords.push(b);
+            }
+
+        //title loop finishes here
+        }
+
+        //continuing from line of code 6 steps above
+        //add this list of coords to the corresponding word in the new dict: word_and_coord
+        word_and_coord[key] = shared_coords;
+
+    //keyvalue dict loop ends here
+    }
+    
+    // const material = new THREE.LineDashedMaterial({color: 0xc90076, dashSize: 20, gapSize: 7.5});
+    // const points = [];
+    // points.push( new THREE.Vector3(- 200, 0, 0) );
+    // points.push( new THREE.Vector3(0, 200, 0) );
+    // points.push( new THREE.Vector3(0, 0, 200) );
+
+    // const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    // const line = new THREE.Line( geometry, material );
+    // line.computeLineDistances();
+    // scene.add(line);
 
     renderer = new THREE.WebGLRenderer( {antialias: true} );
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
-
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 0, 0);
     controls.update();
-
     controls.addEventListener('change', render);
     window.addEventListener('resize', onWindowResize);
 
@@ -802,4 +859,4 @@ function render() {
     renderer.render( scene, camera );
 }
 
-console.log(title_and_coord)
+console.log(word_and_coord);
