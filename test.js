@@ -7,12 +7,36 @@
 // //import { TextGeometry } from 'TextGeometry';
 // //import * as CatenaryCurve from "https://unpkg.com/@gsimone/three-catenary@0.1.0/dist/gsimone-three-catenary.cjs.dev.js";
 
-if (lwrcase.includes[word]){
-    
-    //append the coord of title to list/array initialized before the loop
-    shared_coords.push(title_and_coord[key]);
-    
-}
+//html code
+/*
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>JavaScript Strings</h1>
+<p id="new"></p>
+
+<p id="demo"></p>
+
+
+<script>
+var a = Math.random();
+
+const sentence = 'Long noncoding RNA CRNDE stabilized by hnRNPUL 2 accelerates cell proliferation and migration in colorectal carcinoma via activating Ras/MAPK signaling pathways';
+const lwrcase = sentence.toLowerCase();
+
+const word = '2';
+
+let result = lwrcase.includes(word);
+
+document.getElementById("demo").innerHTML = result;
+document.getElementById("new").innerHTML = a;
+</script>
+
+</body>
+</html>
+
+*/
 
 // //see three.js version
 // //console.log(THREE.REVISION);
