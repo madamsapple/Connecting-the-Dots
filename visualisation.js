@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'OrbitControls';
 import { FontLoader } from 'FontLoader';
-import Stats from 'https://unpkg.com/three@0.161.0/examples/jsm/libs/stats.module.js';
-import * as GeometryUtils from 'https://unpkg.com/three@0.161.0/examples/jsm/utils/GeometryUtils.js';
+// import Stats from 'https://unpkg.com/three@0.161.0/examples/jsm/libs/stats.module.js';
+// import * as GeometryUtils from 'https://unpkg.com/three@0.161.0/examples/jsm/utils/GeometryUtils.js';
 //import { TextGeometry } from 'TextGeometry';
 
 //see three.js version
@@ -728,33 +728,30 @@ function init() {
             word_and_coord[word] = shared_coords;
             
         }
-        console.log(word_and_coord);
-        //setting up line objects 
-        // const material = new THREE.LineDashedMaterial({color: 0xc90076, dashSize: 20, gapSize: 7.5});
-        // const points = [];
-        // points.push( new THREE.Vector3(- 200, 0, 0) );
-        // points.push( new THREE.Vector3(0, 200, 0) );
-        // points.push( new THREE.Vector3(0, 0, 200) );
+        //console.log(word_and_coord);
 
-        // const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        // const line = new THREE.Line( geometry, material );
-        // line.computeLineDistances();
-        // scene.add(line);
+        
+        //setting up the main associations/mappings/lines 
+        const material = new THREE.LineDashedMaterial({color: 0xc90076, dashSize: 20, gapSize: 7.5});
+
+        //loop through every word and its matching coordinates
+        for (const [key, value] of Object.entries(word_and_coord)) {
+            //console.dir(`Key: ${key}, Value: ${value}`);
+
+            //.setFromPoints(x) needs x to be a list/array of Vec3 values
+            //value of word_and_coord obj is already an array of Vec3 values
+            const geometry = new THREE.BufferGeometry().setFromPoints(value);
+            const line = new THREE.Line( geometry, material );
+            //to have dashes on a line you have to call .computeLineDistance() on your geometry
+            line.computeLineDistances();
+            scene.add(line);
+        }
+        
 
     });
-    
-    
-    // const material = new THREE.LineDashedMaterial({color: 0xc90076, dashSize: 20, gapSize: 7.5});
-    // const points = [];
-    // points.push( new THREE.Vector3(- 200, 0, 0) );
-    // points.push( new THREE.Vector3(0, 200, 0) );
-    // points.push( new THREE.Vector3(0, 0, 200) );
 
-    // const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    // const line = new THREE.Line( geometry, material );
-    // line.computeLineDistances();
-    // scene.add(line);
-
+    //don't change anything below because it messes resizing
+    //not even spacing or formatting
     renderer = new THREE.WebGLRenderer( {antialias: true} );
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
