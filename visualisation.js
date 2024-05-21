@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'OrbitControls';
 import { FontLoader } from 'FontLoader';
+import {GLTFLoader} from 'https://unpkg.com/three@0.161.0/examples/jsm/loaders/GLTFLoader.js';
 // import Stats from 'https://unpkg.com/three@0.161.0/examples/jsm/libs/stats.module.js';
 // import * as GeometryUtils from 'https://unpkg.com/three@0.161.0/examples/jsm/utils/GeometryUtils.js';
 //import { TextGeometry } from 'TextGeometry';
@@ -8,7 +9,7 @@ import { FontLoader } from 'FontLoader';
 //see three.js version
 //console.log(THREE.REVISION);
 
-const clock = new THREE.Clock();
+
 
 //All titles; cleaned scraped datas
 const sentences = [
@@ -635,167 +636,190 @@ let message;
 //stores every title and its world position/coordinate/Vector3 value in the scene
 const title_and_coord = {};
 
-init();
-render();
+//adding a camera
+camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
+camera.position.set(0, 0, 1500);
 
-function init() {
+//adding a scene
+scene = new THREE.Scene();
+scene.background = new THREE.Color(0xFFD2A3);
+//scene.fog = new THREE.FogExp2( 0xDDD7C4, 0.0004 );
 
-    //adding a camera
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-    camera.position.set(0, 0, 1500);
+//don't change anything below because it messes resizing
+//not even spacing or formatting
+renderer = new THREE.WebGLRenderer( {antialias: true} );
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth, window.innerHeight);
 
-    //adding a scene
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf0f0f0);
+document.body.appendChild(renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
+//controls.update();
+controls.addEventListener('change', animate);
+window.addEventListener('resize', onWindowResize);
 
-    //creating a font and using it as the geometry
-    const loader = new FontLoader();
-    loader.load('./fonts/Montserrat_Regular.json', function (font){
+const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+scene.add( light );
 
-        const color = 0x000000;
-        const matLite = new THREE.MeshBasicMaterial({
-            color: color,
-            opacity: 1.0,
-            side: THREE.DoubleSide
-        });
+//creating a font and using it as the geometry
+const loader = new FontLoader();
+loader.load('./fonts/Montserrat_Regular.json', function (font){
 
-        for (let i = 0; i < sentences.length; i++) {
-            
-            var title_coord = new THREE.Vector3();
-            message = sentences[i];
-
-            const shapes = font.generateShapes(message, 100);
-            const geometry = new THREE.ShapeGeometry(shapes);
-
-            //generate a 1 or -1
-            var plusOrMinus = Math.random() < 0.5 ? -1 : 1;
-            var plusOrMinus2 = Math.round(Math.random()) * 2 - 1;
-            
-            var title = new THREE.Mesh(geometry, matLite);
-                title.position.x = i*100*plusOrMinus*Math.random();
-
-                title.position.y = plusOrMinus2 * (300 + ((Math.random()*100) + 0) + (Math.random()*1000));
-
-                title.position.z = i*100;
-                //plusOrMinus * ( 900 + ((Math.random()*10) + 0) + (Math.random()*100) + (Math.random()*1000) );
-
-                //title.position.z = plusOrMinus2 * (900 + ((Math.random()*10) + 0) + (Math.random()*100) + (Math.random()*1000));
-
-                //title.position.y = plusOrMinus2 * ( 900 + ((Math.random()*10) + 0) + (Math.random()*100) + (Math.random()*1000) );
-
-                //title.rotateY(Math.random() * 1.1 * 3.14 * plusOrMinus2);
-                title.scale.setScalar(0.9)
-                
-                scene.add(title);
-                title_and_coord[message] = title.getWorldPosition(title_coord);
-                
-                //printing each title's coord
-                //console.log(title.getWorldPosition(title_coord));
-
-        //title loop ends here
-        }
-        
-        /*
-        Rendering lines across titles with shared words
-        
-        PSEUDOCODE:
-        - Loop through each unique word in uniq_words dictionary (604 at present)
-            - Loop through all the titles (508 at present)
-                - if the word appears in the title
-                    - Make a new dict/add to a dict 
-                    where the key is the word and value is the world coordinates of the title
-                    for example:
-                        {
-                        "ai" : [ {242.34, 234.989, 8756.21}, {}, ...],
-                        "its" : [ {922.34, 834.989, 3177.21}, Vector3, Vector3, ....],
-                        .....
-                        }
-            Once dict is complete, loop through it and draw lines intersecting at all those coordinates
-        */
-        
-        for (let word in uniq_words) {
-            var shared_coords = [];
-            
-            //console.log(title_and_coord)
-            Object.keys(title_and_coord).forEach(key => {
-                //console.log(title_and_coord[key]);
-
-                const lwrcase = key.toLowerCase();
-                if (lwrcase.includes(word)){
-    
-                    //append the coord of title to list/array initialized before the loop
-                    shared_coords.push(title_and_coord[key]);
-                }
-            });
-            word_and_coord[word] = shared_coords;
-            
-        }
-        //console.log(word_and_coord);
-
-        
-        //setting up the main associations/mappings/lines 
-        const material = new THREE.LineDashedMaterial({
-            color: 0xc90076, 
-            dashSize: 20, 
-            gapSize: 7.5,
-            lineWidth: 0.1
-        });
-
-        //loop through every word and its matching coordinates
-        for (const [key, value] of Object.entries(word_and_coord)) {
-            //console.dir(`Key: ${key}, Value: ${value}`);
-
-            //.setFromPoints(x) needs x to be a list/array of Vec3 values
-            //value of word_and_coord obj is already an array of Vec3 values
-            const geometry = new THREE.BufferGeometry().setFromPoints(value);
-            const line = new THREE.Line( geometry, material );
-            //to have dashes on a line you have to call .computeLineDistance() on your geometry
-            line.computeLineDistances();
-            scene.add(line);
-             // ! Called each frame
-
-            
-        }
-        
-        loader.load('./baby.gltf', function(gltf){
-            const model = gltf.scene;
-            model.scale.set(8.2, 8.2, 8.2);
-            baby = model;
-            model.position.y = 1;
-            scene.add(model);
-
-            mixer = new THREE.AnimationMixer(model);
-            const clips = gltf.animations;
-            const clip = THREE.AnimationClip.findByName(clips, "Rotation");
-            const action = mixer.clipAction(clip);
-            action.play();
-        });
-
+    const color = 0x000000;
+    const matLite = new THREE.MeshBasicMaterial({
+        color: color,
+        opacity: 1.0,
+        side: THREE.DoubleSide
     });
 
-    //don't change anything below because it messes resizing
-    //not even spacing or formatting
-    renderer = new THREE.WebGLRenderer( {antialias: true} );
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 0, 0);
-    controls.update();
-    controls.addEventListener('change', render);
-    window.addEventListener('resize', onWindowResize);
+    for (let i = 0; i < sentences.length; i++) {
+        
+        var title_coord = new THREE.Vector3();
+        message = sentences[i];
 
-} //end init
+        const shapes = font.generateShapes(message, 100);
+        const geometry = new THREE.ShapeGeometry(shapes);
+
+        //generate a 1 or -1
+        var plusOrMinus = Math.random() < 0.5 ? -1 : 1;
+        var plusOrMinus2 = Math.round(Math.random()) * 2 - 1;
+        
+        var title = new THREE.Mesh(geometry, matLite);
+            title.position.x = i*100*plusOrMinus*Math.random();
+
+
+            title.position.y = plusOrMinus2 * (300 + ((Math.random()*100)) + (Math.random()*1000));
+
+            //z is very spread out for this combination of values
+            title.position.z = ( 700 + ((Math.random()*100) + 1) + (i*Math.random()*1000) );
+            //plusOrMinus * ( 900 + ((Math.random()*10) + 0) + (Math.random()*100) + (Math.random()*1000) );
+
+            //title.position.z = plusOrMinus2 * (900 + ((Math.random()*10) + 0) + (Math.random()*100) + (Math.random()*1000));
+
+            //title.position.y = plusOrMinus2 * ( 900 + ((Math.random()*10) + 0) + (Math.random()*100) + (Math.random()*1000) );
+
+            //title.rotateY(Math.random() * 1.1 * 3.14 * plusOrMinus2);
+            title.scale.setScalar(0.5)
+            
+            scene.add(title);
+            title_and_coord[message] = title.getWorldPosition(title_coord);
+            
+            //printing each title's coord
+            //console.log(title.getWorldPosition(title_coord));
+
+    //title loop ends here
+    }
+    
+    /*
+    Rendering lines across titles with shared words
+    
+    PSEUDOCODE:
+    - Loop through each unique word in uniq_words dictionary (604 at present)
+        - Loop through all the titles (508 at present)
+            - if the word appears in the title
+                - Make a new dict/add to a dict 
+                where the key is the word and value is the world coordinates of the title
+                for example:
+                    {
+                    "ai" : [ {242.34, 234.989, 8756.21}, {}, ...],
+                    "its" : [ {922.34, 834.989, 3177.21}, Vector3, Vector3, ....],
+                    .....
+                    }
+        Once dict is complete, loop through it and draw lines intersecting at all those coordinates
+    */
+    
+    for (let word in uniq_words) {
+        var shared_coords = [];
+        
+        //console.log(title_and_coord)
+        Object.keys(title_and_coord).forEach(key => {
+            //console.log(title_and_coord[key]);
+
+            const lwrcase = key.toLowerCase();
+            if (lwrcase.includes(word)){
+
+                //append the coord of title to list/array initialized before the loop
+                shared_coords.push(title_and_coord[key]);
+            }
+        });
+        word_and_coord[word] = shared_coords;
+        
+    }
+    //console.log(word_and_coord);
+
+    
+    //setting up the main associations/mappings/lines 
+    const material = new THREE.LineDashedMaterial({
+        color: 0xc90076, 
+        dashSize: 20, 
+        gapSize: 7.5,
+        lineWidth: 0.1
+    }); 
+
+    //loop through every word and its matching coordinates
+    for (const [key, value] of Object.entries(word_and_coord)) {
+        //console.dir(`Key: ${key}, Value: ${value}`);
+
+        //.setFromPoints(x) needs x to be a list/array of Vec3 values
+        //value of word_and_coord obj is already an array of Vec3 values
+        const geometry = new THREE.BufferGeometry().setFromPoints(value);
+        const line = new THREE.Line( geometry, material );
+        //to have dashes on a line you have to call .computeLineDistance() on your geometry
+        line.computeLineDistances();
+        scene.add(line);
+         // ! Called each frame
+        
+        const path = new THREE.CatmullRomCurve3(value, true);
+        
+    }
+    //console.log(word_and_coord);
+});
+
+let mixer = null;
+
+//3d baby model
+const loader_3d = new GLTFLoader().setPath('baby_1motions/');
+loader_3d.load('scene.gltf', (gltf) => {
+    const baby = gltf.scene;
+
+    baby.position.set(0, 1.05, 1500);
+    
+    scene.add(baby);
+
+    var light = new THREE.AmbientLight(0xffffff);
+    scene.add(light);
+
+    //console.log(gltf.animations);
+    mixer = new THREE.AnimationMixer(baby);
+    const clips = gltf.animations;
+
+    const action = mixer.clipAction(gltf.animations[0]);
+    action.play();
+
+})
+
+const clock = new THREE.Clock();
+//render the entire scene
+function animate() {
+
+    //console.log(word_and_coord);
+    if(mixer){
+        mixer.update(clock.getDelta());
+    }
+        
+    renderer.render( scene, camera );
+
+}
+
+renderer.setAnimationLoop(animate);
+
+
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    render();
+    animate();
 }
 
-//render the entire scene
-function render() {
-    renderer.render( scene, camera );
-}
+
 
