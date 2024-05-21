@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'OrbitControls';
 import { FontLoader } from 'FontLoader';
 import {GLTFLoader} from 'https://unpkg.com/three@0.161.0/examples/jsm/loaders/GLTFLoader.js';
+//import { Timer } from 'https://unpkg.com/three@0.161.0/examples/jsm/misc/Timer.js';
+
 // import Stats from 'https://unpkg.com/three@0.161.0/examples/jsm/libs/stats.module.js';
 // import * as GeometryUtils from 'https://unpkg.com/three@0.161.0/examples/jsm/utils/GeometryUtils.js';
 //import { TextGeometry } from 'TextGeometry';
@@ -660,6 +662,9 @@ window.addEventListener('resize', onWindowResize);
 const light = new THREE.AmbientLight( 0x404040 ); // soft white light
 scene.add( light );
 
+//invisible path to follow for the baby
+let curve = null;
+
 //creating a font and using it as the geometry
 const loader = new FontLoader();
 loader.load('./fonts/Montserrat_Regular.json', function (font){
@@ -767,21 +772,22 @@ loader.load('./fonts/Montserrat_Regular.json', function (font){
         line.computeLineDistances();
         scene.add(line);
          // ! Called each frame
-        
-        const path = new THREE.CatmullRomCurve3(value, true);
-        
+
     }
     //console.log(word_and_coord);
 });
 
 let mixer = null;
+let elapsedTime = 0;  // To keep track of time
+const pathDuration = 10000;  // Duration in seconds for one complete loop
+let baby = null;
 
 //3d baby model
 const loader_3d = new GLTFLoader().setPath('baby_1motions/');
 loader_3d.load('scene.gltf', (gltf) => {
-    const baby = gltf.scene;
+    baby = gltf.scene;
 
-    baby.position.set(0, 1.05, 1500);
+    //baby.position.set(0, 1.05, 1500);
     
     scene.add(baby);
 
@@ -790,7 +796,6 @@ loader_3d.load('scene.gltf', (gltf) => {
 
     //console.log(gltf.animations);
     mixer = new THREE.AnimationMixer(baby);
-    const clips = gltf.animations;
 
     const action = mixer.clipAction(gltf.animations[0]);
     action.play();
@@ -798,13 +803,29 @@ loader_3d.load('scene.gltf', (gltf) => {
 })
 
 const clock = new THREE.Clock();
+//const timer = new Timer();
 //render the entire scene
 function animate() {
 
     //console.log(word_and_coord);
+    const delta = clock.getDelta();
+    elapsedTime += delta;
+
     if(mixer){
-        mixer.update(clock.getDelta());
+        mixer.update(delta);
     }
+
+    if (baby) {
+        const t = (elapsedTime % pathDuration) / pathDuration;  // Normalize to [0, 1]
+        curve = new THREE.CatmullRomCurve3(word_and_coord["ai"], true);
+        const position = curve.getPoint(t);
+        baby.position.copy(position);
+    }
+
+    // 
+    // const t = (time / 2000%6)/6;
+    // const position = path.getPointAt(t);
+    // baby.position.copy(position);
         
     renderer.render( scene, camera );
 
