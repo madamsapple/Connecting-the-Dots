@@ -4,13 +4,9 @@ import { FontLoader } from 'FontLoader';
 import {GLTFLoader} from 'https://unpkg.com/three@0.161.0/examples/jsm/loaders/GLTFLoader.js';
 //import { Timer } from 'https://unpkg.com/three@0.161.0/examples/jsm/misc/Timer.js';
 
-// import Stats from 'https://unpkg.com/three@0.161.0/examples/jsm/libs/stats.module.js';
-// import * as GeometryUtils from 'https://unpkg.com/three@0.161.0/examples/jsm/utils/GeometryUtils.js';
-//import { TextGeometry } from 'TextGeometry';
 
 //see three.js version
 //console.log(THREE.REVISION);
-
 
 
 //All titles; cleaned scraped datas
@@ -644,8 +640,6 @@ camera.position.set(0, 0, 1500);
 
 //adding a scene
 scene = new THREE.Scene();
-scene.background = new THREE.Color(0xFFD2A3);
-//scene.fog = new THREE.FogExp2( 0xDDD7C4, 0.0004 );
 
 //don't change anything below because it messes resizing
 //not even spacing or formatting
@@ -661,6 +655,35 @@ window.addEventListener('resize', onWindowResize);
 
 const light = new THREE.AmbientLight( 0x404040 ); // soft white light
 scene.add( light );
+//scene.background = new THREE.Color(0xFFD2A3);
+
+// let cloudParticles = [];
+// let cloudGeo;
+// let cloudMaterial;
+// let bg_loader = new THREE.TextureLoader();
+// bg_loader.load("lightsmoke.jpeg", function(texture){
+//     cloudGeo = new THREE.PlaneGeometry(500,500);
+//     cloudMaterial = new THREE.MeshLambertMaterial({
+//       map:texture,
+//       transparent: true
+//     });
+
+//     for(let p=0; p<50; p++) {
+//       let cloud = new THREE.Mesh(cloudGeo, cloudMaterial);
+//       cloud.position.set(
+//         Math.random()*800 -400,
+//         500,
+//         Math.random()*500-500
+//       );
+//       cloud.rotation.x = 1.16;
+//       cloud.rotation.y = -0.12;
+//       cloud.rotation.z = Math.random()*2*Math.PI;
+//       cloud.material.opacity = 0.55;
+//       cloudParticles.push(cloud);
+//       scene.add(cloud);
+//     }
+//   });
+//scene.fog = new THREE.FogExp2( 0xDDD7C4, 0.0004 );
 
 //invisible path to follow for the baby
 let curve = null;
@@ -669,7 +692,7 @@ let curve = null;
 const loader = new FontLoader();
 loader.load('./fonts/Montserrat_Regular.json', function (font){
 
-    const color = 0x000000;
+    const color = 0xFFF1DF;
     const matLite = new THREE.MeshBasicMaterial({
         color: color,
         opacity: 1.0,
@@ -689,7 +712,7 @@ loader.load('./fonts/Montserrat_Regular.json', function (font){
         var plusOrMinus2 = Math.round(Math.random()) * 2 - 1;
         
         var title = new THREE.Mesh(geometry, matLite);
-            title.position.x = i*100*plusOrMinus*Math.random();
+            title.position.x = i*90*plusOrMinus*Math.random();
 
 
             title.position.y = plusOrMinus2 * (300 + ((Math.random()*100)) + (Math.random()*1000));
@@ -754,7 +777,7 @@ loader.load('./fonts/Montserrat_Regular.json', function (font){
     
     //setting up the main associations/mappings/lines 
     const material = new THREE.LineDashedMaterial({
-        color: 0xc90076, 
+        color: 0xFF00B4, 
         dashSize: 20, 
         gapSize: 7.5,
         lineWidth: 0.1
@@ -771,7 +794,7 @@ loader.load('./fonts/Montserrat_Regular.json', function (font){
         //to have dashes on a line you have to call .computeLineDistance() on your geometry
         line.computeLineDistances();
         scene.add(line);
-         // ! Called each frame
+
 
     }
     //console.log(word_and_coord);
@@ -799,11 +822,12 @@ loader_3d.load('scene.gltf', (gltf) => {
 
     const action = mixer.clipAction(gltf.animations[0]);
     action.play();
+    
 
 })
 
 const clock = new THREE.Clock();
-//const timer = new Timer();
+
 //render the entire scene
 function animate() {
 
@@ -822,11 +846,6 @@ function animate() {
         baby.position.copy(position);
     }
 
-    // 
-    // const t = (time / 2000%6)/6;
-    // const position = path.getPointAt(t);
-    // baby.position.copy(position);
-        
     renderer.render( scene, camera );
 
 }
