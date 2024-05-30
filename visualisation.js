@@ -2,12 +2,15 @@ import * as THREE from 'three';
 import { OrbitControls } from 'OrbitControls';
 import { FontLoader } from 'FontLoader';
 import {GLTFLoader} from 'https://unpkg.com/three@0.161.0/examples/jsm/loaders/GLTFLoader.js';
+//import {clone} from 'https://unpkg.com/three@0.161.0/examples/jsm/utils/SkeletonUtils.js';
 //import { Timer } from 'https://unpkg.com/three@0.161.0/examples/jsm/misc/Timer.js';
 
 
 //see three.js version
 //console.log(THREE.REVISION);
 
+const line_color = 0xFF00D6;
+const text_color = 0xFFF1DF;
 
 //All titles; cleaned scraped datas
 const sentences = [
@@ -634,12 +637,62 @@ let message;
 //stores every title and its world position/coordinate/Vector3 value in the scene
 const title_and_coord = {};
 
-//adding a camera
-camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
-camera.position.set(0, 0, 1500);
+//CLOCK
+const clock = new THREE.Clock();
 
 //adding a scene
 scene = new THREE.Scene();
+
+//adding a camera
+camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
+camera.position.set(0, -1933, 489221);
+
+//loading manager has 4 methods to help with the loading of the page
+//this instance can be passed to the any loader method to perform xyz actions 
+const loadingManager = new THREE.LoadingManager();
+
+
+//when loading of page takes place
+//url of the file being loaded, item is index of loading object, total is total no of objects loaded
+const progressBar = document.getElementById('progress-bar');
+loadingManager.onProgress = function(url, loaded, total){
+    progressBar.value = (loaded / total) * 100;
+}
+
+//select loading visualisation component
+const progressBarContainer = document.querySelector('.progress-bar-container');
+
+//About button and popup component
+const aboutContainer = document.querySelector('.main-container-about');
+aboutContainer.style.display = 'none'
+
+//Info button
+const infoContainer = document.querySelector('.infocontainer');
+infoContainer.style.display = 'none'
+
+
+
+//camera animation which zooms into the visualisation
+let tween = new TWEEN.Tween(camera.position).to({ x: 0, y: -10, z: 5500}, 15000);
+
+
+
+//tween a movement smoothly between 2 states so that camera animation isnt instantaneous
+//.Tween(xyz) is starting state
+//this tween goes to this coord, next parameter is duration
+
+//console.log('Camera pos: ' + camera.position);
+
+//camera.position.set(0, 0, 4500);
+
+// let z;
+// const zFinal = 7000;
+// camera.position.z = 
+
+//end of visualisation has roughly this coord postion:
+//Vector3 {x: 0, y: 2.9956204125019437e-11 or -1933, z: 489221.9396788709}
+//Vector3 {x: 0, y: -1768.6423885545769, z: 447623.8996228858}
+//beginning coord is x=0, y: (-9 or -12), z: anywhere between 2100/3000 (<this is the absolute end) to 7000
 
 //don't change anything below because it messes resizing
 //not even spacing or formatting
@@ -649,14 +702,58 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
-//controls.update();
+
+
+//when page has loaded
+loadingManager.onLoad = function() {
+    //console.log('fini: ' + clock.getElapsedTime());
+    progressBarContainer.style.display = 'none';
+    //descrip.style.display = 'none'
+    controls.enabled = false;
+
+    tween.start();
+
+    tween.onComplete(function() {
+        aboutContainer.style.display = 'flex';
+        infoContainer.style.display = 'flex'
+        controls.enabled = true;
+
+        var overlay = document.querySelectorAll(".overlay");
+        var popup_about = document.querySelector(".popup");
+        var popup_info = document.getElementsByClassName(".popup2");
+
+        overlay.onclick = function () {
+            overlay.style.display = 'none';
+            popup_about.style.display = 'none';
+            popup_info.style.display = 'none';
+        };
+      });
+}
+controls.update();
+
 controls.addEventListener('change', animate);
 window.addEventListener('resize', onWindowResize);
 
+const listener = new THREE.AudioListener();
+camera.add( listener );
+
+// create a global audio source
+const sound = new THREE.Audio( listener );
+
+// load a sound and set it as the Audio object's buffer
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load( 'assets/EtherealAmbientAtmosphere.mp3', function( buffer ) {
+	sound.setBuffer( buffer );
+	sound.setLoop( true );
+	sound.setVolume( 0.5 );
+	sound.play();
+});
+
+
 const light = new THREE.AmbientLight( 0x404040 ); // soft white light
 scene.add( light );
-//scene.background = new THREE.Color(0xFFD2A3);
 
+//scene.background = new THREE.Color(0xFFD2A3);
 // let cloudParticles = [];
 // let cloudGeo;
 // let cloudMaterial;
@@ -667,7 +764,6 @@ scene.add( light );
 //       map:texture,
 //       transparent: true
 //     });
-
 //     for(let p=0; p<50; p++) {
 //       let cloud = new THREE.Mesh(cloudGeo, cloudMaterial);
 //       cloud.position.set(
@@ -685,16 +781,17 @@ scene.add( light );
 //   });
 //scene.fog = new THREE.FogExp2( 0xDDD7C4, 0.0004 );
 
-//invisible path to follow for the baby
+
+//creates invisible path for the future 3d model of baby to move/crawl on
 let curve = null;
 
-//creating a font and using it as the geometry
-const loader = new FontLoader();
-loader.load('./fonts/Montserrat_Regular.json', function (font){
 
-    const color = 0xFFF1DF;
+//creating a font and using it as the geometry
+const loader = new FontLoader(loadingManager);
+loader.load('./assets/Montserrat_Regular.json', function (font){
+
     const matLite = new THREE.MeshBasicMaterial({
-        color: color,
+        color: text_color,
         opacity: 1.0,
         side: THREE.DoubleSide
     });
@@ -777,7 +874,7 @@ loader.load('./fonts/Montserrat_Regular.json', function (font){
     
     //setting up the main associations/mappings/lines 
     const material = new THREE.LineDashedMaterial({
-        color: 0xFF00B4, 
+        color: line_color, 
         dashSize: 20, 
         gapSize: 7.5,
         lineWidth: 0.1
@@ -805,6 +902,23 @@ let elapsedTime = 0;  // To keep track of time
 const pathDuration = 10000;  // Duration in seconds for one complete loop
 let baby = null;
 
+// async function loadbabies() {
+//     const baby_loader = new GLTFLoader().setPath('baby_1motions/');
+//     const [...allmodels] = await Promise.all([baby_loader.loadAsync('scene.gltf'), baby_loader.loadAsync('scene.gltf')]);
+  
+//     const bb1 = allmodels[0].scene;
+//     const bbys = [allmodels[0].scene, allmodels[0].scene.clone(), allmodels[0].scene.clone(), allmodels[0].scene.clone()];
+  
+//     bbys[0].position.set(10, 0, 1600);
+//     bbys[1].position.set(40, 0, 1600);
+//     bbys[2].position.set(80, 0, 1600);
+//     bbys[3].position.set(100, 0, 1600);
+  
+//     scene.add(bb1.scene);
+//     scene.add(bbys.scene);
+// };
+// await loadbabies();
+
 //3d baby model
 const loader_3d = new GLTFLoader().setPath('baby_1motions/');
 loader_3d.load('scene.gltf', (gltf) => {
@@ -822,16 +936,26 @@ loader_3d.load('scene.gltf', (gltf) => {
 
     const action = mixer.clipAction(gltf.animations[0]);
     action.play();
-    
 
-})
 
-const clock = new THREE.Clock();
+    // for(let i=0;i<10;i++){
+    //     let babyClone = SkeletonUtils.clone(baby);  
+    //     scene.add(babyClone);
+    //     babyArray.push( babyClone );
+    //     // console.log(babyArray);
+    //     var bb_light = new THREE.AmbientLight(0xffffff);
+    //     scene.add(bb_light);
+    //     const action = mixer.clipAction(gltf.animations[0],babyClone);
+    //     action.play();
+    // }
+});
+
 
 //render the entire scene
 function animate() {
 
-    //console.log(word_and_coord);
+    //console.log(camera.position);
+    //console.log(progressBar.value);
     const delta = clock.getDelta();
     elapsedTime += delta;
 
@@ -846,6 +970,8 @@ function animate() {
         baby.position.copy(position);
     }
 
+    TWEEN.update();
+    
     renderer.render( scene, camera );
 
 }

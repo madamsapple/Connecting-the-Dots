@@ -5,14 +5,105 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="css_styling.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 		<style>
 			
 		</style>
 	</head>
 	<body>
-		<div id="info">
-			<a href="https://threejs.org" target="_blank" rel="noopener"></a>
+		
+		<!-- <br>
+		<br>
+		<br> -->
+		<div class="progress-bar-container">
+			<label for="progress-bar">Loading visualisation...</label>
+			<progress id="progress-bar" value="0" max="100"></progress>
 		</div>
+
+		<!-- <div class="descrip">
+			<p>Can a bot perform language acquisition like babies?</p>
+		</div>  -->
+
+		<!-- About Section Popup -->
+		<div class="main-container-about">
+			<a class="button" href="#popup">ABOUT</a>
+		</div>
+
+		<div>
+			<div id="popup" class="overlay">
+				<div class="popup">
+					<h2>What is this project?</h2>
+					<a class="close" href="#">&times;</a>
+					<div class="content">
+						The title of this digital piece is "Connecting the Dots".
+						<br><br>In 1950, Alan Turing said, "Instead of trying to produce a programme to simulate the adult mind, why not rather try to produce one which simulates the child’s?" 
+						
+						<br><br>Human infants are the best learners in the universe - curious, self-motivated, and able to learn unsupervised from much smaller, uncurated data. 
+						Research has already shown early success in using neural network approaches to emulate word-learning in infants. 
+						Many approaches are based on an important principle called associative learning, where knowledge is built by creating associations between words and their referring images or concepts.
+						
+						<br><br>To explore the strength of this approach, I built a bot that scrapes titles of scholarly literature on AI and uses the same associative learning method to try and understand itself from the collected information. 
+						Words with similar representations are linked, demonstrating the bot's pursuit to find familiarity and meaning amidst a surrounding world of information - just like a baby.
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Info button popup 
+		style="position: absolute; bottom: 3%; left: 3%;"
+	-->
+		<div class="infocontainer">
+			<a class="infobutton" href="#popup2">
+				<div></div>
+			</a>			
+		</div>
+		<div>
+			<div id="popup2" class="overlay">
+				<div class="popup2">
+					<h2>Controls</h2>
+
+					<a class="close2" href="#">&times;</a>
+
+					<div class="responsive">
+						<div class="gallery">
+							<a target="_blank" href="img_forest.jpg">
+							<img src="assets/click.png" alt="Click" width="600" height="400">
+							</a>
+							<div class="desc">Click and drag to pan </div>
+							<div class="desc">across the visualisation</div>
+							
+						</div>
+					</div>
+
+					<div class="responsive">
+						<div class="gallery">
+							<a target="_blank" href="img_5terre.jpg">
+							<img src="assets/swipe.png" alt="Swiping fingers">
+							</a>
+							<div class="desc">Swipe up and down  </div>
+							<div class="desc">to zoom in and out</div>
+							<div class="desc">respectively</div>
+						</div>
+					</div>
+
+					<div class="responsive">
+						<div class="gallery">
+							<a target="_blank" href="img_forest.jpg">
+							<img src="assets/pinch.png" alt="Click">
+							</a>
+							<div class="desc">Pinch inwards or outwards</div>
+							<div class="desc">to zoom in and out</div>
+							<div class="desc">respectively</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/23.1.2/tween.umd.js" integrity="sha512-tVgTGDCgmeSNyNQn+QS+htn5AvnZc3tnER7GFo3ylfohYZKlottjyG2ryA4z2c1HV2Q7+MM3aN2A9abItyPpuA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		
 
 		<script type="importmap">
 			{
