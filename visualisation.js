@@ -673,7 +673,7 @@ infoContainer.style.display = 'none'
 
 
 //camera animation which zooms into the visualisation
-let tween = new TWEEN.Tween(camera.position).to({ x: 0, y: -10, z: 5500}, 15000);
+let tween = new TWEEN.Tween(camera.position).to({ x: 0, y: -10, z: 5500}, 55000);
 
 
 
