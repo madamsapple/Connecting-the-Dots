@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'OrbitControls';
 import { FontLoader } from 'FontLoader';
 import {GLTFLoader} from 'https://unpkg.com/three@0.161.0/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'https://unpkg.com/three@0.161.0/examples/jsm/loaders/DRACOLoader.js';
+
 //import {clone} from 'https://unpkg.com/three@0.161.0/examples/jsm/utils/SkeletonUtils.js';
 //import { Timer } from 'https://unpkg.com/three@0.161.0/examples/jsm/misc/Timer.js';
 
@@ -897,10 +899,17 @@ loader.load('./assets/Montserrat_Regular.json', function (font){
     //console.log(word_and_coord);
 });
 
+//variables for tracking time; will be used to move baby along a path
 let mixer = null;
 let elapsedTime = 0;  // To keep track of time
 const pathDuration = 10000;  // Duration in seconds for one complete loop
 let baby = null;
+
+
+//DRACO
+const loader_draco = new DRACOLoader();
+// Specify path to a folder containing WASM/JS decoding libraries.
+loader_draco.setDecoderPath( 'draco/' );
 
 // async function loadbabies() {
 //     const baby_loader = new GLTFLoader().setPath('baby_1motions/');
@@ -920,8 +929,9 @@ let baby = null;
 // await loadbabies();
 
 //3d baby model
-const loader_3d = new GLTFLoader().setPath('baby_1motions/');
-loader_3d.load('scene.gltf', (gltf) => {
+const loader_3d = new GLTFLoader();
+loader_3d.setDRACOLoader(loader_draco);
+loader_3d.load('compressed_glb.glb', (gltf) => {
     baby = gltf.scene;
 
     //baby.position.set(0, 1.05, 1500);
