@@ -649,6 +649,8 @@ scene = new THREE.Scene();
 camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
 camera.position.set(0, -1933, 489221);
 
+
+
 //loading manager has 4 methods to help with the loading of the page
 //this instance can be passed to the any loader method to perform xyz actions 
 const loadingManager = new THREE.LoadingManager();
@@ -660,6 +662,8 @@ const progressBar = document.getElementById('progress-bar');
 loadingManager.onProgress = function(url, loaded, total){
     progressBar.value = (loaded / total) * 100;
 }
+
+
 
 //select loading visualisation component
 const progressBarContainer = document.querySelector('.progress-bar-container');
@@ -675,21 +679,24 @@ infoContainer.style.display = 'none'
 
 
 //camera animation which zooms into the visualisation
-let tween = new TWEEN.Tween(camera.position).to({ x: 0, y: -10, z: 5500}, 55000);
+let tween = new TWEEN.Tween(camera.position).to({ x: 0, y: -32.69, z: 7000}, 65000);
+//stutter in camera
+/*
+Vector3 {x: 0, y: -32.69140000000061, z: 11207.907800000045}
+visualisation.js:988 Polar angle of controls: 1.574747485761659
+visualisation.js:987 Vector3 {x: 0, y: -25.845520001146497, z: 9485.861040288291}
 
+1.52 LL
+1.58 middle
+1.62 UL
+*/
 
 
 //tween a movement smoothly between 2 states so that camera animation isnt instantaneous
 //.Tween(xyz) is starting state
 //this tween goes to this coord, next parameter is duration
 
-//console.log('Camera pos: ' + camera.position);
-
-//camera.position.set(0, 0, 4500);
-
-// let z;
-// const zFinal = 7000;
-// camera.position.z = 
+//console.log('Camera pos: ' + camera.position)
 
 //end of visualisation has roughly this coord postion:
 //Vector3 {x: 0, y: 2.9956204125019437e-11 or -1933, z: 489221.9396788709}
@@ -716,25 +723,37 @@ loadingManager.onLoad = function() {
     tween.start();
 
     tween.onComplete(function() {
+        
         aboutContainer.style.display = 'flex';
         infoContainer.style.display = 'flex'
         controls.enabled = true;
 
-        var overlay = document.querySelectorAll(".overlay");
-        var popup_about = document.querySelector(".popup");
-        var popup_info = document.getElementsByClassName(".popup2");
-
-        overlay.onclick = function () {
-            overlay.style.display = 'none';
-            popup_about.style.display = 'none';
-            popup_info.style.display = 'none';
-        };
       });
 }
 controls.update();
 
 controls.addEventListener('change', animate);
 window.addEventListener('resize', onWindowResize);
+//top angle is 0 rad and bottom angle along y axis is 3.14
+//2.03 (downwards) - 0.63 (upwards) is the suitable limit for vertical camera rotation (in radians using getpolarangle)
+// if (camera.position == {x: -264.18275843082796, y: -5826.587829532871, z: 9971.40308120192}){
+//     controls.minPolarAngle = Math.PI/2.4;
+// 	   controls.maxPolarAngle =  Math.PI/1.5;
+// }
+
+// if ( -1083.587829532871 > camera.position.y > 1722){
+//     controls.minPolarAngle = Math.PI/2;
+// 	   controls.maxPolarAngle =  Math.PI/1.9;
+// }
+controls.minPolarAngle = Math.PI/2.1; //1.5
+controls.maxPolarAngle =  Math.PI/2; //1.57
+//plusOrMinus2 * (300 + ((Math.random()*100)) + (Math.random()*1000));
+//850 - 300/2 = 275
+
+// if (camera.position.z > 5332){
+//     controls.minPolarAngle = Math.PI/2.1;//1.5
+// 	controls.maxPolarAngle =  Math.PI/2;//1.57
+// }
 
 const listener = new THREE.AudioListener();
 camera.add( listener );
@@ -965,6 +984,7 @@ loader_3d.load('compressed_glb.glb', (gltf) => {
 function animate() {
 
     //console.log(camera.position);
+    //console.log('Polar angle of controls: ' + controls.getPolarAngle());
     //console.log(progressBar.value);
     const delta = clock.getDelta();
     elapsedTime += delta;
