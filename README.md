@@ -1,4 +1,4 @@
-Final Project
+(Final Graduation Project)
 
 By web scraping information on AI and applying an associative learning mechanism to it, a bot tries to learn about itself. This will be shown as a visualisation on a website using Three.js.
  
