@@ -9,21 +9,21 @@
 		<style>
 			@font-face {
 				font-family: "gotham";
-				src: url('./assets/GothamMedium.ttf');
+				src: url('./assets/montserrat/Montserrat-Medium.ttf');
 			}
 
 			@font-face {
 				font-family: "gothambold";
-				src: url('./assets/GothamBold.ttf');
+				src: url('./assets/montserrat/Montserrat-ExtraBold.ttf');
 			}
 
 			@font-face {
 				font-family: "gothamlight";
-				src: url('./assets/GothamLight.ttf');
+				src: url('./assets/montserrat/Montserrat-Regular.ttf');
 			}
 
 			body {
-				background: linear-gradient(-45deg, #fcc5c0,#fa9fb5,#7a0177);
+				background: linear-gradient(-45deg, #ffa4f1,#fa9fb5,#7a0177);
 				background-size: 400% 400%;
 				animation: gradient 15s ease infinite;
 				height: 100vh;
@@ -55,11 +55,11 @@
 			h1{
 				color: #fff7f3;
 				font-family: "gothambold";
-				font-size:6vw;
+				font-size:5.5vw;
 				display: flex;
 				position: absolute;
-				top:20%;
-				left:17%;
+				top:9%;
+				left:16%;
 			}
 
 			/* 2. description paragraph*/
@@ -72,7 +72,7 @@
 				crowded atop at one place or height always  being 0*/
 				display: contents;
 				position: relative;
-				line-height: 1.6;
+				line-height: 1.7;
 			}
 
 			/* 3. button to enter viz */
@@ -90,10 +90,11 @@
 				/* height is of button itself */
 				height: 80px;
 				width: 260px;
-				font-family: "gothamlight";
+				font-family: "gotham";
 				font-size:1.3em;
-				line-height: 85px;
-				color:#903756;
+				/* how far is the text inside from the top edge */
+				line-height: 62px;
+				color:#c44a8f;
 				background-color: rgb(255, 255, 255);
 				border: 2px solid rgb(255, 230, 253);
 				border-radius: 40px 40px 40px 40px; 
@@ -102,17 +103,21 @@
 			}
 
 			.button:hover {
-				background-color: #fff7f3;
+				background-color: rgb(255, 255, 255);
 				border: 1.5px solid rgb(255, 230, 253);
+				font-size:1.4em;
 				width: 350px;
 				color:#ff00aa;
+				font-family: "gothambold";
+				/*
 				font-weight: 900;
 				text-shadow: 0.4px 0.3px, -0.5px -0.2px;
+				*/
 				/* color is text/font color inside button */
 			}
 
 			.space{
-				height: 265px;
+				height: 235px;
 			}
 			
 		</style>
@@ -122,10 +127,10 @@
 		<!-- <br>
 		<br>
 		<br> -->
-		<h1>Connecting the Dots</h1>
+		<h1>Connecting the Dots. . .</h1>
 		<div class="space"></div>
 		<div class="descrip">
-			In 1950, Alan Turing said, "Instead of trying to produce a programme to simulate the adult mind, why not rather try to produce one which simulates the child’s?" 
+			In 1950, Alan Turing said "Instead of trying to produce a programme to simulate the adult mind, why not rather try to produce one which simulates the child’s?" 
 			
 			<br><br>Human infants are the best learners in the universe: they are curious, self-motivated, and can learn things unsupervised from much smaller, uncurated data. 
 			Research has already shown early success in machine learning becoming better at learning words using the same approaches as infants. 

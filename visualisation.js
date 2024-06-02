@@ -11,7 +11,7 @@ import { DRACOLoader } from 'https://unpkg.com/three@0.161.0/examples/jsm/loader
 //see three.js version
 //console.log(THREE.REVISION);
 
-const line_color = 0xFF00D6;
+const line_color = 0xFF33FF;
 const text_color = 0xFFF1DF;
 
 //All titles; cleaned scraped datas
@@ -679,7 +679,7 @@ infoContainer.style.display = 'none'
 
 
 //camera animation which zooms into the visualisation
-let tween = new TWEEN.Tween(camera.position).to({ x: 0, y: -32.69, z: 7000}, 65000);
+let tween = new TWEEN.Tween(camera.position).to({ x: 0, y: -32.69, z: 7000}, 75000);
 //stutter in camera
 /*
 Vector3 {x: 0, y: -32.69140000000061, z: 11207.907800000045}
@@ -809,7 +809,7 @@ let curve = null;
 
 //creating a font and using it as the geometry
 const loader = new FontLoader(loadingManager);
-loader.load('./assets/Montserrat_Regular.json', function (font){
+loader.load('assets/montserrat/Montserrat_Regular.json', function (font){
 
     const matLite = new THREE.MeshBasicMaterial({
         color: text_color,

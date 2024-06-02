@@ -1,6 +1,16 @@
 @font-face {
 	font-family: "gotham";
-	src: url('./assets/GothamMedium.ttf');
+	src: url('./assets/montserrat/Montserrat-Regular.ttf');
+}
+
+@font-face {
+	font-family: "gothammedium";
+	src: url('./assets/montserrat/Montserrat-Medium.ttf');
+}
+
+@font-face {
+	font-family: "gothambold";
+	src: url('./assets/montserrat/Montserrat-Bold.ttf');
 }
 
 body {
@@ -33,7 +43,7 @@ body {
 
 label {
 	color: rgb(255, 0, 179);
-	font-size: medium;
+	font-size: 1.4em;
 }
 
 
@@ -41,24 +51,17 @@ label {
 /**/
 
 /* About section */
-
-.content{
-	display: inline; /* the default for span */
-	width: 100px;
-	height: 100px;
-	padding: 5px;
-	border: 1px solid blue; 
-}
   
 .main-container-about{
 	position: absolute;
 	left: 1.3%;
-	top: 3.8%;
+	top: 2%;
 	
 }
 
 .button {
 	font-size: 140%;
+	font-family: "gothammedium";
 	padding: 10px;
 	color: #fff;
 	cursor: pointer;
@@ -67,8 +70,9 @@ label {
 }
 
 .button:hover {
-	font-size: 160%;
-  	font-weight: bold
+	font-size: 170%;
+	color: #ffdaf9;
+	font-family: "gothambold";
 }
 
 .overlay {
@@ -96,7 +100,6 @@ label {
 	border-radius: 5px;
 	width: 60%;
 	height: 60%;
-	
 	transition: all 5s ease-in-out;
 	display: block;
 }
@@ -106,12 +109,12 @@ label {
 	text-align: center;
 	color: rgb(51, 51, 51);
 }
-.popup .close {
+.close {
 	position: absolute;
-	top: 1%;
-    right: 2%;
+	right: 18.9%;
+	top:11%;
 	transition: all 200ms;
-	font-size: 30px;
+	font-size: 50px;
 	font-weight: bold;
 	text-decoration: none;
 	color: rgb(51, 51, 51);
@@ -119,10 +122,20 @@ label {
 .popup .close:hover {
 	color: #FF00D6;
 }
+
+.content{
+	 /* the default for span */
+	position: absolute;
+	width: 60%;
+	height: 51%;
+	line-height: 32px;
+	overflow: scroll;
+	text-align: justify;
+}
+
 .popup .content {
 	text-align: justify;
-	max-height: 30%;
-	overflow: auto;
+	
 	color: rgb(51, 51, 51);
 }
 
@@ -149,7 +162,7 @@ label {
 }
 
 .infobutton:hover {
-	background-image: url('assets/short_info_highl.svg');
+	background-image: url('assets/short_info_highl2.svg');
 	width: 40px; 
 	height: 40px;
 }
@@ -177,10 +190,10 @@ label {
 
 .popup2 .close2 {
 	position: absolute;
-	top: 2%;
+	top: 0%;
     right: 2%;
 	transition: all 200ms;
-	font-size: 30px;
+	font-size: 50px;
 	font-weight: bold;
 	text-decoration: none;
 	color: rgb(51, 51, 51);
@@ -203,9 +216,9 @@ responsive gallery of controls
 }
 
 div.gallery {
-	border: 1px solid #ccc;
-	translate: 9%;
-	
+	border: 1px solid rgba(204, 204, 204, 0);
+	padding: 5%;
+	margin-left: 20%;
 	
 }
 
@@ -224,7 +237,7 @@ div.desc {
 	display: block;
 	padding: 15px;
 	text-align: center;
-	height: fit-content;
+	height: auto;
 }
 
 
