@@ -98,24 +98,53 @@
 			</div>
 		</div>
 		
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/23.1.2/tween.umd.js" integrity="sha512-tVgTGDCgmeSNyNQn+QS+htn5AvnZc3tnER7GFo3ylfohYZKlottjyG2ryA4z2c1HV2Q7+MM3aN2A9abItyPpuA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-		
+        <!---->
+
+        
+		<script>
+			//CLICK SOUND EFFECT
+			window.addEventListener("load", (event) => {
+				console.log("page is fully loaded");
+			});
+			const click_sound = new Audio("assets/click_sound_compr.mp3");
+			const about_button = document.querySelector("a.button");
+			const info_button = document.querySelector("a.infobutton");
+			const close_1 = document.querySelector("a.close");
+			const close_2 = document.querySelector("a.close2");
+
+			//for all buttons (about and info) play sound effect
+			about_button.addEventListener("click", () => {
+				click_sound.play();
+			});
+
+			info_button.addEventListener("click", () => {
+				click_sound.play();
+			});
+
+			//On closing popups, play sound effect
+			close_1.addEventListener("click", () => {
+				click_sound.play();
+			});
+
+			close_2.addEventListener("click", () => {
+				click_sound.play();
+			});
+		</script>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/23.1.2/tween.umd.js" integrity="sha512-tVgTGDCgmeSNyNQn+QS+htn5AvnZc3tnER7GFo3ylfohYZKlottjyG2ryA4z2c1HV2Q7+MM3aN2A9abItyPpuA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+				
 
 		<script type="importmap">
 			{
 				"imports": {
 					"three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
-                    "OrbitControls": "https://unpkg.com/three@0.161.0/examples/jsm/controls/OrbitControls.js",
+					"OrbitControls": "https://unpkg.com/three@0.161.0/examples/jsm/controls/OrbitControls.js",
 					"FontLoader": "https://unpkg.com/three@0.161.0/examples/jsm/loaders/FontLoader.js",
 					"TextGeometry": "https://unpkg.com/three@0.161.0/examples/jsm/geometries/TextGeometry.js"
 				}
 			}
 		</script>
+		<script type="module" src="visualisation.js"></script>
 		
-        <!---->
-
-        <script type="module" src="visualisation.js"></script>
-		
-
     </body>
 </html>

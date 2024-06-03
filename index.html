@@ -123,6 +123,17 @@
 		</style>
 	</head>
 	<body>
+		<script>
+			const audio = new Audio("assets/click_sound_compr.mp3");
+			const buttons = document.querySelectorAll("button");
+
+			buttons.forEach(button => {
+				button.addEventListener("click", () => {
+					audio.play();
+				});
+			});
+		</script>
+		
 		
 		<!-- <br>
 		<br>
@@ -145,6 +156,8 @@
 			</a>
 			
 		</div>
+
+		
 	
     </body>
 </html>

@@ -755,6 +755,7 @@ controls.maxPolarAngle =  Math.PI/2; //1.57
 // 	controls.maxPolarAngle =  Math.PI/2;//1.57
 // }
 
+//AUDIO SECTIONS
 const listener = new THREE.AudioListener();
 camera.add( listener );
 
@@ -769,6 +770,7 @@ audioLoader.load( 'assets/EtherealAmbientAtmosphere.mp3', function( buffer ) {
 	sound.setVolume( 0.5 );
 	sound.play();
 });
+
 
 
 const light = new THREE.AmbientLight( 0x404040 ); // soft white light
