@@ -72,7 +72,7 @@ label {
 .button:hover {
 	font-size: 170%;
 	color: #ffdaf9;
-	font-family: "gothambold";
+	font-weight: bolder;
 }
 
 .overlay {

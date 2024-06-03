@@ -58,20 +58,26 @@
 				font-size:5.5vw;
 				display: flex;
 				position: absolute;
-				top:9%;
+				top:6%;
 				left:16%;
 			}
 
 			/* 2. description paragraph*/
 			.descrip{
+				padding-top: 10%;
 				color: #ffffff;
 				font-family: "gotham";
 				font-size:1.3vw;
-				height: 300px;
+				width: 88%;
+				height: 60%;
 				/*display contents is fix for all text getting
 				crowded atop at one place or height always  being 0*/
-				display: contents;
+				
 				position: relative;
+				overflow: scroll;
+				top: 10%;
+				margin-left: auto;
+				margin-right: auto;
 				line-height: 1.7;
 			}
 
@@ -80,7 +86,7 @@
 				display: flex;
 				
 				position: absolute;
-				top: 80%;
+				top: 83%;
 				left: 50%;
 				-ms-transform: translate(-50%, -65%);
 				transform: translate(-50%, -65%);
@@ -100,6 +106,8 @@
 				border-radius: 40px 40px 40px 40px; 
 				transition-duration: 0.4s;
   				cursor: pointer;
+				position: relative;
+				top: 60%;
 			}
 
 			.button:hover {
@@ -123,12 +131,19 @@
 		</style>
 	</head>
 	<body>
-		<script src="index_js_clicks.js"></script>
+		<script>
+			function play() {
+				var snd_effect = document.getElementById("audio");
+				snd_effect.play();
+			}
+		</script>
+		
+
 		<!-- <br>
 		<br>
 		<br> -->
 		<h1>Connecting the Dots. . .</h1>
-		<div class="space"></div>
+		
 		<div class="descrip">
 			In 1950, Alan Turing said "Instead of trying to produce a programme to simulate the adult mind, why not rather try to produce one which simulates the child’s?" 
 			
@@ -140,8 +155,10 @@
 			This visualisation illustrates that learning process, showing the network of associations formed. The bot tries to find familiarity and meaning amidst a surrounding world of information — just like a baby.
 		</div>
 		<div class="center">
+			
 			<a href="Loading_Vis.html">
-				<button class="button">Enter Visualisation</button>
+				<input type="button" class="button" value="Enter Visualisation" onclick="play()">
+				<audio id="audio" src="assets/click_sound_compr.mp3"></audio>
 			</a>
 			
 		</div>
