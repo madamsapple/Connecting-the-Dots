@@ -1,4 +1,4 @@
-https://madamsapple.github.io/Connecting-the-Dots/
+Official website: https://madamsapple.github.io/Connecting-the-Dots/
 
 By web scraping information on AI and applying an associative learning mechanism to it, a bot tries to learn about itself. This will be shown as a visualisation on a website using Three.js.
  
